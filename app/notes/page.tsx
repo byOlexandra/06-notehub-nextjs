@@ -9,7 +9,7 @@ import { fetchNotes } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { keepPreviousData } from "@tanstack/react-query";
-// import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Notes() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +23,7 @@ export default function Notes() {
     const openModal = () => setIsOpenModal(true);
     const closeModal = () => setIsOpenModal(false);
 
-    const { data, isFetching, isError } = useQuery({
+    const { data, isError } = useQuery({
         queryKey: ["notes", searchQuery, currentPage],
         queryFn: () => fetchNotes(searchQuery, currentPage),
         placeholderData: keepPreviousData,
@@ -51,8 +51,7 @@ export default function Notes() {
                     Create note +
                 </button>
             </header>
-            {/* <Toaster /> */}
-            {isFetching && <Loader />}
+            <Toaster />
             {notes.length > 0 && (
                 <NoteList notes={notes} />
             )}
