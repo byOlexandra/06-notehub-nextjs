@@ -1,6 +1,6 @@
 import css from "./NotesPage.module.css";
 import NoteList from "@/components/NoteList/NoteList";
-import SearchBox from "../SearchBox/SearchBox";
+import SearchBox from "@/components/SearchBox/SearchBox";
 import NoteForm from "../NoteForm/NoteForm";
 import Modal from "../Modal/Modal";
 import Pagination from "../Pagination/Pagination";
