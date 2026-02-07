@@ -1,66 +1,19 @@
-import css from "./NotesPage.module.css";
-import NoteList from "@/components/NoteList/NoteList";
-import SearchBox from "@/components/SearchBox/SearchBox";
-import NoteForm from "@/components/NoteForm/NoteForm";
-import Modal from "@/components/Modal/Modal";
-import Pagination from "@/components/Pagination/Pagination";
-import { useQuery } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { fetchNotes } from "@/lib/api";
-import { useEffect, useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
-import { keepPreviousData } from "@tanstack/react-query";
-import toast, { Toaster } from "react-hot-toast";
+import NotesClient from "./Notes.client";
 
-export default function Notes() {
-    const [searchQuery, setSearchQuery] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const debouncedSetSearchQuery = useDebouncedCallback((value: string) => {
-        setSearchQuery(value)
-        setCurrentPage(1);
-    }, 300);
-    const [isOpenModal, setIsOpenModal] = useState(false);
+export default async function Notes() {
+    const queryClient = new QueryClient();
 
-    const openModal = () => setIsOpenModal(true);
-    const closeModal = () => setIsOpenModal(false);
-
-    const { data, isError } = useQuery({
-        queryKey: ["notes", searchQuery, currentPage],
-        queryFn: () => fetchNotes(searchQuery, currentPage),
-        placeholderData: keepPreviousData,
+    await queryClient.prefetchQuery({
+        queryKey: ["notes", { searchQuery: '' }, { currentPage: 1 }],
+        queryFn: () => fetchNotes('', 1),
     });
 
-    useEffect(() => {
-        if (isError) toast.error('Somehing bad happenned. Try again.')
-    }, [isError])
-
-    const notes = data?.notes || [];
-    const totalPages = data?.totalPages || 0;
-
     return (
-        <div className={css.app}>
-            <header className={css.toolbar}>
-                <SearchBox text={searchQuery} onSearch={debouncedSetSearchQuery} />
-                {totalPages > 0 && (
-                    <Pagination
-                        changePage={setCurrentPage}
-                        page={currentPage}
-                        totalPg={totalPages}
-                    />
-                )}
-                <button className={css.button} onClick={openModal}>
-                    Create note +
-                </button>
-            </header>
-            <Toaster />
-            {notes.length > 0 && (
-                <NoteList notes={notes} />
-            )}
-            {isOpenModal && (
-                <Modal onClose={closeModal}>
-                    <NoteForm onClose={closeModal} />
-                </Modal>
-            )}
-        </div>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <NotesClient />
+        </HydrationBoundary>
     );
 }
 
