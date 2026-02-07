@@ -33,6 +33,11 @@ export async function fetchNotes(
     }
 }
 
+export async function fetchNoteById(id: Note['id']): Promise<Note> {
+    const { data } = await axios.get<Note>(`/notes/${id}`);
+    return data;
+}
+
 export type CreateNoteInForm = Omit<Note, "id" | "createdAt" | "updatedAt">;
 
 export async function createNote(noteData: CreateNoteInForm): Promise<Note> {
