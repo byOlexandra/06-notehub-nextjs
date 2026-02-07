@@ -1,7 +1,7 @@
 'use client'
 
 import SearchBox from "@/components/SearchBox/SearchBox";
-import css from "./NotesPage.module.css";
+import css from "./Notes.client.module.css";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import Pagination from "@/components/Pagination/Pagination";
