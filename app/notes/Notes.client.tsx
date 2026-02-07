@@ -24,12 +24,17 @@ export default function NotesClient() {
     const openModal = () => setIsOpenModal(true);
     const closeModal = () => setIsOpenModal(false);
 
-    const { data } = useQuery({
+    const { data, error, isError } = useQuery({
         queryKey: ["notes", { searchQuery }, { currentPage }],
         queryFn: () => fetchNotes(searchQuery, currentPage),
         refetchOnMount: false,
         placeholderData: keepPreviousData,
+        retry: false,
     })
+
+    if (isError) {
+        throw error
+    }
 
     const notes = data?.notes || [];
     const totalPages = data?.totalPages || 0;
