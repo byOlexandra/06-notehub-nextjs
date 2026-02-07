@@ -33,8 +33,12 @@ export async function fetchNotes(
     }
 }
 
-export async function fetchNoteById(id: Note['id']): Promise<Note> {
-    const { data } = await axios.get<Note>(`/notes/${id}`);
+export async function fetchNoteById(id: string): Promise<Note> {
+    const { data } = await axios.get<Note>(`/notes/${id}`, {
+        headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
+        },
+    });
     return data;
 }
 

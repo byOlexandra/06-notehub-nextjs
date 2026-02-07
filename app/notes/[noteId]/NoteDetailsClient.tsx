@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { fetchNoteById } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
@@ -12,10 +12,11 @@ export default function NoteDetailsClient() {
         queryFn: () => fetchNoteById(noteId),
         refetchOnMount: false,
     })
+
+    if (isLoading) return <p>Loading, please wait...</p>;
+    if (error || !data) return <p>Something went wrong.</p>
     return (
         <>
-            {isLoading && <p>Loading, please wait...</p>}
-            {error && <p>Something went wrong.</p>}
             <div className={css.container}>
                 <div className={css.item}>
                     <div className={css.header}>
@@ -26,9 +27,7 @@ export default function NoteDetailsClient() {
                     <p className={css.date}>{data?.createdAt}</p>
                 </div>
             </div>
-
         </>
-
     )
 }
 
