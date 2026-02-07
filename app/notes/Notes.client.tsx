@@ -62,7 +62,6 @@ export default function NotesClient() {
                     </Modal>
                 )
             }
-
         </div>
     )
 }
